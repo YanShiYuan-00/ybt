@@ -176,11 +176,10 @@
                                 onChange={(e) => { setSearchTerm(e.target.value); setShowSuggestions(true); }}
                                 onClick={() => {
                                     if (!isMember) {
-                                        const nextCount = searchClickCount + 1;
-                                        setSearchClickCount(nextCount);
-                                        if (nextCount >= 2) {
-                                            onShowMembershipPopup();
-                                        }
+                                        setSearchClickCount(c => {
+                                            if (c + 1 >= 2) onShowMembershipPopup();
+                                            return c + 1;
+                                        });
                                     }
                                     setShowSuggestions(true);
                                 }}
