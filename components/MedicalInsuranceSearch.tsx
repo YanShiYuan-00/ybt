@@ -5,12 +5,10 @@ import { MOCK_DRUGS } from '../mockData';
 
 interface MedicalInsuranceSearchProps {
   onBack: () => void;
-  onBuy: (drug: Drug, currentSearchTerm: string) => void;
+  onBuy: (drug: Drug) => void;
   membershipExpiry?: string | null;
   isMember: boolean;
   onShowMembershipPopup: () => void;
-  searchTerm: string;
-  onSearchTermChange: (term: string) => void;
 }
 
 const MedicalInsuranceSearch: React.FC<MedicalInsuranceSearchProps> = ({ 
@@ -18,10 +16,9 @@ const MedicalInsuranceSearch: React.FC<MedicalInsuranceSearchProps> = ({
   onBuy, 
   membershipExpiry,
   isMember,
-  onShowMembershipPopup,
-  searchTerm,
-  onSearchTermChange
+  onShowMembershipPopup
 }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [searchClickCount, setSearchClickCount] = useState(0);
   const [location] = useState<LocationInfo>({ province: '四川', city: '成都' });
   const [sort, setSort] = useState<SortType>('default');
@@ -170,19 +167,17 @@ const MedicalInsuranceSearch: React.FC<MedicalInsuranceSearchProps> = ({
             onFocus={() => setShowSuggestions(true)}
             onClick={() => {
               if (!isMember) {
-                setSearchClickCount(prev => {
-                  const next = prev + 1;
-                  if (next >= 2) {
-                    onShowMembershipPopup();
-                  }
-                  return next;
-                });
+                const nextCount = searchClickCount + 1;
+                setSearchClickCount(nextCount);
+                if (nextCount >= 2) {
+                  onShowMembershipPopup();
+                }
               }
               setShowSuggestions(true);
             }}
             onChange={(e) => {
               if (isMember || searchClickCount < 2) {
-                onSearchTermChange(e.target.value);
+                setSearchTerm(e.target.value);
                 setVisibleCount(10);
                 setSelectedManufacturer('全部');
                 setShowSuggestions(true);
@@ -201,7 +196,7 @@ const MedicalInsuranceSearch: React.FC<MedicalInsuranceSearchProps> = ({
                     key={drug.id}
                     className="px-4 py-3 hover:bg-orange-50 active:bg-orange-100 cursor-pointer border-b border-gray-50 last:border-0 flex items-center justify-between"
                     onClick={() => {
-                      onSearchTermChange(drug.name);
+                      setSearchTerm(drug.name);
                       setShowSuggestions(false);
                     }}
                   >
@@ -274,7 +269,7 @@ const MedicalInsuranceSearch: React.FC<MedicalInsuranceSearchProps> = ({
               <DrugCard 
                 key={drug.id} 
                 drug={drug} 
-                onBuy={() => onBuy(drug, searchTerm)} 
+                onBuy={() => onBuy(drug)} 
                 onManufacturerClick={handleManufacturerClick}
               />
             ))}
