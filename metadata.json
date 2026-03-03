@@ -1,0 +1,7 @@
+{
+  "name": "医保通 (Medical Insurance Connect)",
+  "description": "药师帮店员版医保挂网价查询原型，支持药品搜索、多维度筛选及毛利分析。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
